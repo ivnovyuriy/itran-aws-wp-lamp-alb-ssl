@@ -19,46 +19,34 @@ terraform plan  -var-file=tfvars/dev.tf
 terraform apply -var-file=tfvars/dev.tf
 ```
 
+![wp](https://github.com/ivnovyuriy/itran-aws-wp-lamp-alb-ssl/blob/9832cb6febfd8c4a730e3e3d3ead9a83c54418ef/img/wp.png)
+
 ## Description
 
 #### VPC
 
+![vpc](https://github.com/ivnovyuriy/itran-aws-wp-lamp-alb-ssl/blob/9832cb6febfd8c4a730e3e3d3ead9a83c54418ef/img/vpc.png)
 
 #### Security groups:
 
-  - Bastion host security group, with open ports 22(SSH) to anywhere and Webserver security group.
+  - Bastion host security group, with open ports 22(SSH) from anywhere and Webserver security group.
   - Application Load balancer security group with ports 443(HTTPS) and 80(HTTP) open to 0.0.0.0/0.
   - RDS security group with ports 3306(MySQL) open to Webserver security group and local machine. 
   - Webserver Security group with ports 3306(MySQL) open to RDS's Security Group, and HTTP port 80 open to ALB Security Group and 22(SSH) open to Bastion security group.
 
 #### Application Load Balancer.
 
+![lb](https://github.com/ivnovyuriy/itran-aws-wp-lamp-alb-ssl/blob/9832cb6febfd8c4a730e3e3d3ead9a83c54418ef/img/lb.png)
+
+![lb_aws](https://github.com/ivnovyuriy/itran-aws-wp-lamp-alb-ssl/blob/9832cb6febfd8c4a730e3e3d3ead9a83c54418ef/img/lb_aws.png)
 
 #### Auto Scaling group. Launch template.
-
-Before we create ASG we need to create Launch Template, for an image_id I passed a data_source since it's an existing resource and will filter out from a given criteria’s and chooses the correct AMI. 
-
-```
-data "aws_ami" "amazon_linux2" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter { # dictionary or map
-    name   = "name"
-    values = ["amzn2-ami-hvm-2.0*"]
-  }
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-}
-```
 
 For this, Amazon LINUX 2 machine (AMI) and t2.micro instance type were used and bash script was added in the user data section. This bash script will download php, httpd, mysql-agent and Wordpress package and unzips it.  
 
 ### UserData
 
-
+Install all the infrastructure  (Wordpress / LAMP / NodeJS / etc)
 
 ## RDS database    
 
@@ -66,12 +54,7 @@ RDS db will be created with an engine MariaDB and version 10.4.8, database insta
 
 Enter RDS db master _```username```_ and _```password```_.
 
-RDS Security group public access will be false for security reason. For learning purposes no backing up ,storage isn't encrypted because db.t2.micro is too small.  
-
-
-## Route 53
-
-
+![rds](https://github.com/ivnovyuriy/itran-aws-wp-lamp-alb-ssl/blob/9832cb6febfd8c4a730e3e3d3ead9a83c54418ef/img/rds.png)
 
 ## Notes 
 
